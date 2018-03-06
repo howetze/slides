@@ -1,0 +1,96 @@
+API Abfrage mit GO
+Mar 2018
+Tags: go golang
+
+
+Holger Wetzel
+on a learning go journey
+
+holger.wetzel@mailbox.org
+@BEMA_Holger
+https://howetze.github.io/
+
+* Definition Type
+
+- schon ziemlich lange Linux Anfänger
+- Go Anfänger
+- Frühchenverein Tübingen
+.link http://www.lichtblick-tuebingen.de
+- LT28 Sven Hedin
+- Maas Neotek Biochips Division
+
+
+* Gopher
+.image https://golang.org/doc/gopher/frontpage.png
+.caption _Gopher_ by [[http://reneefrench.blogspot.com/][Renée French]]
+
+
+* API to access
+.image https://luftdaten.info/wp-content/uploads/2017/03/feinstaub-sensor.jpg _ 600
+.link http://luftdaten.info/
+
+* access to API
+
+Request:
+
+.link http://api.luftdaten.info/v1/sensor/6940/
+
+
+
+
+
+Response:
+
+.iframe http://api.luftdaten.info/v1/sensor/6940/ 80 950
+
+
+
+
+
+* generate Struct
+
+.link https://mholt.github.io/json-to-go/
+
+.iframe https://mholt.github.io/json-to-go/ 600 1050
+
+
+* define Struct
+
+  File: temperature/dht/struct.go
+.code api/dht/struct.go
+
+
+* Import Folder with Struct
+
+.code api/apitest.go /start outScope/,/end outScope/
+
+
+
+Package names
+
+  When a package is imported, the package name becomes an accessor for the contents. After
+  import "bytes"
+  the importing package can talk about bytes.Buffer.
+.link https://golang.org/doc/effective_go.html#package-names
+
+
+* Get response
+func () main {
+.code api/apitest.go /start response OMIT/,/end response OMIT
+}
+
+* Fill struct
+.code api/apitest.go /start tmp OMIT/,/end tmp OMIT
+
+* Print Temperature
+.code api/apitest.go /start print OMIT/,/end print OMIT
+
+* Example Go code
+.play -edit api/apitest.go /start inScope/,/end inScope/
+
+
+
+* JSON and GO
+
+More info about Marshal
+.link https://blog.golang.org/json-and-go
