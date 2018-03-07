@@ -88,8 +88,6 @@ func () main {
 * Example Go code
 .play -edit api/apitest.go /start inScope/,/end inScope/
 
-
-
 * JSON and GO
 
 More info about Marshal
