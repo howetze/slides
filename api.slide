@@ -7,7 +7,7 @@ Holger Wetzel
 on a learning go journey
 
 holger.wetzel@mailbox.org
-@BEMA_Holger
+@howetze_
 https://howetze.github.io/
 
 * Definition Type
@@ -29,15 +29,13 @@ https://howetze.github.io/
 .image https://luftdaten.info/wp-content/uploads/2017/03/feinstaub-sensor.jpg _ 600
 .link http://luftdaten.info/
 
+
+
 * access to API
 
 Request:
 
 .link http://api.luftdaten.info/v1/sensor/6940/
-
-
-
-
 
 Response:
 
@@ -54,16 +52,19 @@ Response:
 .iframe https://mholt.github.io/json-to-go/ 600 1050
 
 
+
+
 * define Struct
 
   File: temperature/dht/struct.go
 .code api/dht/struct.go
 
 
+
+
 * Import Folder with Struct
 
 .code api/apitest.go /start outScope/,/end outScope/
-
 
 
 Package names
@@ -74,21 +75,45 @@ Package names
 .link https://golang.org/doc/effective_go.html#package-names
 
 
+
+
 * Get response
-func () main {
-.code api/apitest.go /start response OMIT/,/end response OMIT
-}
+
+.code api/apitest.go /start outScope/,/end outScope/
+
+
+
 
 * Fill struct
+func main {
 .code api/apitest.go /start tmp OMIT/,/end tmp OMIT
+}
+
+
 
 * Print Temperature
 .code api/apitest.go /start print OMIT/,/end print OMIT
 
+
+	//	r[0] - vorheriger Wert
+	//	r[1] - aktueller Wert
+	//	Sensordatavalues[0] - Temperatur
+	//	Sensordatavalues[1] - Humidity
+
+
+
+
 * Example Go code
 .play -edit api/apitest.go /start inScope/,/end inScope/
+
+
+
 
 * JSON and GO
 
 More info about Marshal
 .link https://blog.golang.org/json-and-go
+
+
+Very good resource: Todd Mc Leod on youtube "Golang JSON Marshal"
+.link https://www.youtube.com/watch?v=2BmMZNAha38

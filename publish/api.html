@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Abfrage mit GO</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>API Abfrage mit GO</h1>
+        <h3>Mar 2018</h3>
+        
+        
+          <div class="presenter">
+            
+  
+  <p>
+    Holger Wetzel
+  </p>
+  
+
+  
+  <p>
+    on a learning go journey
+  </p>
+  
+
+          </div>
+        
+          <div class="presenter">
+            
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Definition Type</h3>
+        
+  <ul>
+  
+    <li>schon ziemlich lange Linux Anfänger</li>
+  
+    <li>Go Anfänger</li>
+  
+    <li>Frühchenverein Tübingen</li>
+  
+  </ul>
+<p class="link"><a href="http://www.lichtblick-tuebingen.de" target="_blank">www.lichtblick-tuebingen.de</a></p>
+  <ul>
+  
+    <li>LT28 Sven Hedin</li>
+  
+    <li>Maas Neotek Biochips Division</li>
+  
+  </ul>
+
+      
+      <div class="pagenumber">[1]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Gopher</h3>
+        
+<div class="image">
+  <img src="https://golang.org/doc/gopher/frontpage.png">
+</div>
+<p class="caption"><i>Gopher</i> by <a href="http://reneefrench.blogspot.com/" target="_blank">Renée French</a></p>
+      
+      <div class="pagenumber">[2]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>API to access</h3>
+        
+<div class="image">
+  <img src="https://luftdaten.info/wp-content/uploads/2017/03/feinstaub-sensor.jpg" width="600">
+</div>
+<p class="link"><a href="http://luftdaten.info/" target="_blank">luftdaten.info/</a></p>
+      
+      <div class="pagenumber">[3]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>access to API</h3>
+        
+  
+  <p>
+    Request:
+  </p>
+  
+<p class="link"><a href="http://api.luftdaten.info/v1/sensor/6940/" target="_blank">api.luftdaten.info/v1/sensor/6940/</a></p>
+  
+  <p>
+    Response:
+  </p>
+  
+
+<iframe src="http://api.luftdaten.info/v1/sensor/6940/" height="80" width="950"></iframe>
+
+      
+      <div class="pagenumber">[4]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>generate Struct</h3>
+        <p class="link"><a href="https://mholt.github.io/json-to-go/" target="_blank">mholt.github.io/json-to-go/</a></p>
+<iframe src="https://mholt.github.io/json-to-go/" height="600" width="1050"></iframe>
+
+      
+      <div class="pagenumber">[5]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>define Struct</h3>
+        
+  
+  <div class="code"><pre>File: temperature/dht/struct.go</pre></div>
+  
+
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">package dht</span>
+<span num="2"></span>
+<span num="3">type Result []struct {</span>
+<span num="4">    Location struct {</span>
+<span num="5">        Country   string `json:&#34;country&#34;`</span>
+<span num="6">        Longitude string `json:&#34;longitude&#34;`</span>
+<span num="7">        Altitude  string `json:&#34;altitude&#34;`</span>
+<span num="8">        Latitude  string `json:&#34;latitude&#34;`</span>
+<span num="9">        ID        int    `json:&#34;id&#34;`</span>
+<span num="10">    } `json:&#34;location&#34;`</span>
+<span num="11">    Timestamp        string `json:&#34;timestamp&#34;`</span>
+<span num="12">    Sensordatavalues []struct {</span>
+<span num="13">        <b>Value     string `json:&#34;value&#34;`</b></span>
+<span num="14">        ValueType string `json:&#34;value_type&#34;`</span>
+<span num="15">        ID        int    `json:&#34;id&#34;`</span>
+<span num="16">    } `json:&#34;sensordatavalues&#34;`</span>
+<span num="17">    Sensor struct {</span>
+<span num="18">        SensorType struct {</span>
+<span num="19">            Manufacturer string `json:&#34;manufacturer&#34;`</span>
+<span num="20">            Name         string `json:&#34;name&#34;`</span>
+<span num="21">            ID           int    `json:&#34;id&#34;`</span>
+<span num="22">        } `json:&#34;sensor_type&#34;`</span>
+<span num="23">        Pin string `json:&#34;pin&#34;`</span>
+<span num="24">        ID  int    `json:&#34;id&#34;`</span>
+<span num="25">    } `json:&#34;sensor&#34;`</span>
+<span num="26">    SamplingRate interface{} `json:&#34;sampling_rate&#34;`</span>
+<span num="27">    ID           int         `json:&#34;id&#34;`</span>
+<span num="28">}</span>
+</pre>
+
+
+</div>
+
+      
+      <div class="pagenumber">[6]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Import Folder with Struct</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="2">package main</span>
+<span num="3"></span>
+<span num="4">import (</span>
+<span num="5">    &#34;encoding/json&#34;</span>
+<span num="6">    &#34;fmt&#34;</span>
+<span num="7">    &#34;io/ioutil&#34;</span>
+<span num="8">    &#34;net/http&#34;</span>
+<span num="9"></span>
+<span num="10">    &#34;github.com/howetze/slides/api/dht&#34;</span>
+<span num="11">)</span>
+</pre>
+
+
+</div>
+
+  
+  <p>
+    Package names
+  </p>
+  
+
+  
+  <div class="code"><pre>When a package is imported, the package name becomes an accessor for the contents. After
+import &#34;bytes&#34;
+the importing package can talk about bytes.Buffer.</pre></div>
+  
+<p class="link"><a href="https://golang.org/doc/effective_go.html#package-names" target="_blank">golang.org/doc/effective_go.html#package-names</a></p>
+      
+      <div class="pagenumber">[7]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Get response</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="2">package main</span>
+<span num="3"></span>
+<span num="4">import (</span>
+<span num="5">    &#34;encoding/json&#34;</span>
+<span num="6">    &#34;fmt&#34;</span>
+<span num="7">    &#34;io/ioutil&#34;</span>
+<span num="8">    &#34;net/http&#34;</span>
+<span num="9"></span>
+<span num="10">    &#34;github.com/howetze/slides/api/dht&#34;</span>
+<span num="11">)</span>
+</pre>
+
+
+</div>
+
+      
+      <div class="pagenumber">[8]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Fill struct</h3>
+        
+  
+  <p>
+    func main {
+  </p>
+  
+
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="29">    body, _ := ioutil.ReadAll(response.Body)</span>
+<span num="30"></span>
+<span num="31">    var r dht.Result</span>
+<span num="32"></span>
+<span num="33">    json.Unmarshal(body, &amp;r) //exceptionally without error handling</span>
+</pre>
+
+
+</div>
+
+  
+  <p>
+    }
+  </p>
+  
+
+      
+      <div class="pagenumber">[9]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Print Temperature</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="39">    fmt.Println(&#34;Temperatur auf meinem Balkon:&#34;, r[1].Sensordatavalues[0].Value, &#34;°C&#34;)</span>
+</pre>
+
+
+</div>
+
+  
+  <div class="code"><pre>//    r[0] - vorheriger Wert
+//    r[1] - aktueller Wert
+//    Sensordatavalues[0] - Temperatur
+//    Sensordatavalues[1] - Humidity</pre></div>
+  
+
+      
+      <div class="pagenumber">[10]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Example Go code</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre contenteditable="true" spellcheck="false"><span num="17">func main() {</span>
+<span num="19"></span>
+<span num="20">    response, err := http.Get(&#34;http://api.luftdaten.info/v1/sensor/6940/&#34;)</span>
+<span num="21">    if err != nil {</span>
+<span num="22">        fmt.Printf(&#34;The HTTP request failed with error %s\n&#34;, err)</span>
+<span num="23">    }</span>
+<span num="24">    defer response.Body.Close()</span>
+<span num="26"></span>
+<span num="28"></span>
+<span num="29">    body, _ := ioutil.ReadAll(response.Body)</span>
+<span num="30"></span>
+<span num="31">    var r dht.Result</span>
+<span num="32"></span>
+<span num="33">    json.Unmarshal(body, &amp;r) //exceptionally without error handling</span>
+<span num="34"></span>
+<span num="36"></span>
+<span num="38"></span>
+<span num="39">    fmt.Println(&#34;Temperatur auf meinem Balkon:&#34;, r[1].Sensordatavalues[0].Value, &#34;°C&#34;)</span>
+<span num="40"></span>
+<span num="42"></span>
+<span num="43">}</span>
+</pre>
+
+
+</div>
+
+      
+      <div class="pagenumber">[11]</div>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>JSON and GO</h3>
+        
+  
+  <p>
+    More info about Marshal
+  </p>
+  
+<p class="link"><a href="https://blog.golang.org/json-and-go" target="_blank">blog.golang.org/json-and-go</a></p>
+  
+  <p>
+    Very good resource: Todd Mc Leod on youtube &#34;Golang JSON Marshal&#34;
+  </p>
+  
+<p class="link"><a href="https://www.youtube.com/watch?v=2BmMZNAha38" target="_blank">www.youtube.com/watch?v=2BmMZNAha38</a></p>
+      
+      <div class="pagenumber">[12]</div>
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    Holger Wetzel
+  </p>
+  
+
+  
+  <p>
+    on a learning go journey
+  </p>
+  
+
+          </div>
+        
+          <div class="presenter">
+            <p class="link"><a href="mailto:holger.wetzel@mailbox.org" target="_blank">holger.wetzel@mailbox.org</a></p><p class="link"><a href="http://twitter.com/howetze_" target="_blank">@howetze_</a></p><p class="link"><a href="https://howetze.github.io/" target="_blank">https://howetze.github.io/</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>
